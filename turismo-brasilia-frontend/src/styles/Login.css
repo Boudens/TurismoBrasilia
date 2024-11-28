@@ -1,0 +1,106 @@
+/* Login Page Styling */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Preenche toda a altura da tela */
+  background: url('../assets/plano-piloto.jpg') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+}
+
+.login-overlay {
+  background: rgba(0, 0, 0, 0.7); /* Fundo com opacidade para melhor contraste */
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 100%;
+  color: #fff;
+  text-align: center;
+  box-sizing: border-box;
+  margin: 0; /* Remove margens */
+}
+
+.login-form h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.input-group {
+  margin-bottom: 1.2rem;
+  text-align: left;
+}
+
+.input-group label {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 1rem; /* Aumentando o padding para tornar os campos mais altos */
+  font-size: 1.2rem; /* Ajustando o tamanho da fonte */
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  box-sizing: border-box; /* Garantindo que o padding não afete a largura */
+}
+
+.input-group input:focus {
+  border-color: #3498db;
+  outline: none; /* Remove o contorno padrão do navegador */
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.login-btn, .switch-form {
+  width: 100%;
+  padding: 1rem; /* Aumentando o padding para botões maiores */
+  margin-top: 1rem;
+  font-size: 1.2rem; /* Tamanho de fonte maior para os botões */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-btn {
+  background-color: #3498db;
+  color: #fff;
+}
+
+.login-btn:hover {
+  background-color: #2980b9;
+}
+
+.switch-form {
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+.switch-form:hover {
+  background-color: #3498db;
+  color: #fff;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .login-container {
+    padding: 2rem;
+  }
+  .login-overlay {
+    max-width: 90%;
+    margin-right: 15px; /* Ajuste para dispositivos móveis */
+  }
+  .input-group input {
+    font-size: 1.1rem; /* Menor tamanho de fonte em dispositivos móveis */
+    padding: 0.8rem; /* Menor padding em dispositivos móveis */
+  }
+  .login-btn, .switch-form {
+    font-size: 1rem; /* Menor tamanho de fonte para botões em dispositivos móveis */
+  }
+}

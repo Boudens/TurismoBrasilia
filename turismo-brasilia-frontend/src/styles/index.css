@@ -1,0 +1,63 @@
+/* global reset */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0; /* Cor de fundo suave */
+}
+
+/* Estilos principais da aplicação */
+.App {
+  text-align: center; /* Centraliza o texto da aplicação */
+}
+
+/* Header da aplicação, com fundo escuro e centralizado */
+.App-header {
+  background-color: #282c34; /* Cor de fundo escura para o header */
+  min-height: 100vh; /* Garantir que o header ocupe toda a altura da tela */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin); /* Fonte responsiva, ajustada conforme a largura da tela */
+  color: white; /* Cor branca para o texto */
+  padding: 20px; /* Adiciona um pouco de espaço ao redor do conteúdo */
+}
+
+/* Tamanho maior para o título */
+.App-header h1 {
+  font-size: 3em;
+  margin-bottom: 20px; /* Distância do título para os outros elementos */
+}
+
+/* Subtítulo ou texto adicional no header */
+.App-header p {
+  font-size: 1.2em;
+  margin-top: 10px;
+}
+
+/* Adicionando um botão estilizado */
+.App-header button {
+  background-color: #61dafb; /* Cor de fundo azul claro */
+  border: none;
+  padding: 10px 20px;
+  font-size: 1.2em;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.App-header button:hover {
+  background-color: #21a1f1; /* Mudança de cor ao passar o mouse */
+}
+
+/* Responsividade: ajusta a fonte do título conforme o tamanho da tela */
+@media (max-width: 768px) {
+  .App-header h1 {
+    font-size: 2.5em;
+  }
+  .App-header p {
+    font-size: 1.1em;
+  }
+}
