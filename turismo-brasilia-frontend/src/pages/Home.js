@@ -1,6 +1,5 @@
-// src/Home.js
 import React from 'react';
-import '../styles/Home.css'; // Arquivo de estilos específico para a Home
+import '../styles/Home.css';
 
 const Home = () => {
   return (
@@ -24,7 +23,7 @@ const Home = () => {
 
       {/* Dicas de Atrações Turísticas */}
       <section className="highlights">
-        <h2 className="highlights-title">Atrações Turísticas Imperdíveis</h2>
+        <h2 className="section-title">Atrações Turísticas Imperdíveis</h2>
         <ul className="highlights-list">
           <li className="highlight-item">
             <strong>Congresso Nacional</strong> - O coração político do Brasil. Aproveite a visita para conhecer mais sobre a política brasileira e a arquitetura de Oscar Niemeyer.

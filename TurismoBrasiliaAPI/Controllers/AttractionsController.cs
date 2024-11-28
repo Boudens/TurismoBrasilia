@@ -1,43 +1,78 @@
 using Microsoft.AspNetCore.Mvc;
 using TurismoBrasiliaAPI.Models;
 using System.Collections.Generic;
+using System.Linq;
+using TurismoBrasiliaAPI.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace TurismoBrasiliaAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/attractions")]
     [ApiController]
     public class AttractionsController : ControllerBase
     {
-        private static readonly List<Attraction> Attractions = new List<Attraction>
+        private readonly AppDbContext _context;
+    
+        public AttractionsController(AppDbContext context)
         {
-            new Attraction("Congresso Nacional", "O coração político do Brasil.", "Praça dos Três Poderes, Brasília", "https://www.df.gov.br/wp-conteudo/uploads/2016/02/pra%C3%A7a-dos-tr%C3%AAs-poderes-ebc.jpg"),
-            new Attraction("Palácio da Alvorada", "Residência oficial do Presidente.", "Eixo Monumental, Brasília", "https://upload.wikimedia.org/wikipedia/commons/e/eb/Homologa%C3%A7%C3%A3o_do_tombamento_de_obras_do_Niemeyer_%2834321040524%29.jpg"),
-            new Attraction("Catedral de Brasília", "Um dos maiores marcos da arquitetura de Niemeyer.", "Eixo Monumental, Brasília", "https://upload.wikimedia.org/wikipedia/commons/c/cf/Catedral1_Rodrigo_Marfan.jpg"),
-            new Attraction("Parque Nacional de Brasília", "Para quem ama natureza e trilhas.", "Brasília", "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0c/fa/ba/1c/piscina-menor-mas-suficiente.jpg?w=1200&h=-1&s=1"),
-            new Attraction("Memorial JK", "Homenagem ao fundador de Brasília, Juscelino Kubitschek.", "Lago Paranoá, Brasília", "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Memorial_J_Kubitschek_Brasilia_2009.jpg/800px-Memorial_J_Kubitschek_Brasilia_2009.jpg")
-        };
-
-        // Método GET que retorna as atrações
-        [HttpGet]
-        public ActionResult<IEnumerable<Attraction>> GetAttractions()
-        {
-            return Ok(Attractions);
+            _context = context;
         }
 
-        // Método POST que adiciona uma nova atração
+        [HttpGet]
+        public async Task<IActionResult> GetAttractions()
+        {
+            var attractions = await _context.Attractions.ToListAsync();
+            return Ok(attractions);
+        }
+
         [HttpPost]
-        public ActionResult<Attraction> AddAttraction([FromBody] Attraction newAttraction)
+        public async Task<ActionResult<Attraction>> AddAttraction([FromBody] Attraction newAttraction)
         {
             if (newAttraction == null)
             {
                 return BadRequest("Atração inválida.");
             }
 
-            newAttraction.Id = Attractions.Count + 1;  // Gerando um ID simples para a nova atração
-            Attractions.Add(newAttraction);  // Adiciona a nova atração na lista
+            _context.Attractions.Add(newAttraction);
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetAttractions), new { id = newAttraction.Id }, newAttraction);
         }
 
+        
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Attraction>> UpdateAttraction(int id, [FromBody] Attraction updatedAttraction)
+        {
+            var attraction = await _context.Attractions.FindAsync(id);
+            if (attraction == null)
+            {
+                return NotFound("Atração não encontrada.");
+            }
+
+            // Atualiza os campos da atração
+            attraction.Name = updatedAttraction.Name ?? attraction.Name;
+            attraction.Description = updatedAttraction.Description ?? attraction.Description;
+            attraction.Location = updatedAttraction.Location ?? attraction.Location;
+            attraction.ImageUrl = updatedAttraction.ImageUrl ?? attraction.ImageUrl;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(attraction);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAttraction(int id)
+        {
+            var attraction = await _context.Attractions.FindAsync(id);
+            if (attraction == null)
+            {
+                return NotFound("Atração não encontrada.");
+            }
+
+            _context.Attractions.Remove(attraction); 
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }

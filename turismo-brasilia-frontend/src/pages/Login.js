@@ -63,7 +63,7 @@ const Login = ({ onLogin }) => {
       if (response.ok) {
         const data = await response.json();
         alert(data.message);
-        setIsRegistering(false); // Volta para a tela de login após registro
+        setIsRegistering(false);
       } else {
         const error = await response.text();
         setErrorMessage(error || 'Erro ao registrar usuário.');

@@ -23,29 +23,23 @@ namespace TurismoBrasiliaAPI.Controllers
             _context = context;
         }
 
-        // Método de Login
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginModel loginModel)
         {
-            // Procurar o usuário no banco de dados com base no nome de usuário
             var user = _context.Users.SingleOrDefault(u => u.Username == loginModel.Username);
 
-            // Verificar se o usuário existe e a senha corresponde (sem encriptação)
             if (user == null || user.Password != loginModel.Password)
             {
                 return Unauthorized("Usuário ou senha inválidos");
             }
 
-            // Gerar o token JWT
             var token = GenerateJwtToken(user.Username);
             return Ok(new { Message = "Login bem-sucedido!", Token = token });
         }
 
-        // Método para registrar um novo usuário
         [HttpPost("register")]
         public IActionResult Register([FromBody] RegisterModel registerModel)
         {
-            // Verificar se o nome de usuário já existe
             var existingUser = _context.Users.SingleOrDefault(u => u.Username == registerModel.Username);
             if (existingUser != null)
             {
@@ -56,18 +50,16 @@ namespace TurismoBrasiliaAPI.Controllers
             var newUser = new User
             {
                 Username = registerModel.Username,
-                Password = registerModel.Password, // Lembre-se de, em produção, usar encriptação de senha
-                Role = "User" // Valor padrão para o campo Role
+                Password = registerModel.Password,
+                Role = "User"
             };
 
-            // Adicionar o novo usuário no banco de dados
             _context.Users.Add(newUser);
             _context.SaveChanges();
 
             return Ok(new { Message = "Usuário registrado com sucesso!" });
         }
 
-        // Método para gerar o token JWT
         private string GenerateJwtToken(string username)
         {
             var claims = new[]

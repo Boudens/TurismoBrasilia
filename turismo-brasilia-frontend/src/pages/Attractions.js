@@ -11,6 +11,7 @@ const Attractions = () => {
     imageUrl: '',
   });
   const [errorMessage, setErrorMessage] = useState('');
+  const [editAttraction, setEditAttraction] = useState(null); // Para editar uma atração
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,6 +83,69 @@ const Attractions = () => {
     }
   };
 
+  const handleDeleteAttraction = async (id) => {
+    const token = localStorage.getItem('token');
+
+    try {
+      const response = await fetch(`http://localhost:5187/api/attractions/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // Remove a atração do estado com base no ID
+        setAttractions((prev) => prev.filter((attraction) => attraction.id !== id)); 
+      } else {
+        setErrorMessage('Erro ao deletar a atração.');
+      }
+    } catch (error) {
+      setErrorMessage('Erro ao conectar com o servidor.');
+    }
+  };
+
+  const handleUpdateAttraction = async (e) => {
+    e.preventDefault(); // Previne o comportamento padrão do formulário
+    const token = localStorage.getItem('token');
+
+    try {
+      const response = await fetch(`http://localhost:5187/api/attractions/${editAttraction.id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editAttraction), // Envia a atração editada
+      });
+
+      if (response.ok) {
+        const updatedAttraction = await response.json();
+        // Atualiza a atração editada no estado
+        setAttractions((prev) =>
+          prev.map((attraction) =>
+            attraction.id === updatedAttraction.id ? updatedAttraction : attraction
+          )
+        );
+        setEditAttraction(null); // Limpa a edição
+      } else {
+        const error = await response.text();
+        setErrorMessage(error || 'Erro ao atualizar atração.');
+      }
+    } catch (error) {
+      setErrorMessage('Erro ao conectar com o servidor.');
+    }
+  };
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditAttraction((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   return (
     <div className="attractions-container">
       <h1>Atrações de Brasília</h1>
@@ -142,6 +206,7 @@ const Attractions = () => {
         {errorMessage && <p className="error-message">{errorMessage}</p>}
       </form>
 
+      {/* Exibição das atrações com opções de edição e exclusão */}
       <div className="cards-container">
         {attractions.map((attraction) => (
           <div key={attraction.id} className="card">
@@ -154,10 +219,74 @@ const Attractions = () => {
               <h3 className="card-title">{attraction.name}</h3>
               <p className="card-description">{attraction.description}</p>
               <p className="card-location"><strong>Localização:</strong> {attraction.location}</p>
+              <button onClick={() => handleDeleteAttraction(attraction.id)} className="delete-btn">Deletar</button>
+              <button onClick={() => setEditAttraction(attraction)} className="edit-btn">Editar</button>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Modal ou formulário de edição */}
+      {editAttraction && (
+        <div className="edit-form">
+          <h2>Editar Atração</h2>
+          <form onSubmit={handleUpdateAttraction}>
+            <div className="input-group">
+              <label htmlFor="name">Nome</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={editAttraction.name}
+                onChange={handleEditInputChange}
+                required
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="description">Descrição</label>
+              <input
+                type="text"
+                id="description"
+                name="description"
+                value={editAttraction.description}
+                onChange={handleEditInputChange}
+                required
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="location">Localização</label>
+              <input
+                type="text"
+                id="location"
+                name="location"
+                value={editAttraction.location}
+                onChange={handleEditInputChange}
+                required
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="imageUrl">URL da Imagem</label>
+              <input
+                type="text"
+                id="imageUrl"
+                name="imageUrl"
+                value={editAttraction.imageUrl}
+                onChange={handleEditInputChange}
+              />
+            </div>
+            <button type="submit" className="edit-btn">
+              Atualizar
+            </button>
+            <button
+              type="button"
+              onClick={() => setEditAttraction(null)}
+              className="cancel-btn"
+            >
+              Cancelar
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 };
